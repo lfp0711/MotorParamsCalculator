@@ -1,0 +1,908 @@
+{% extends "layout.html" %}
+{% block title %}乾勤电机参数计算器{% endblock %}
+{% block head %}
+<meta name="csrf-token" content="{{ csrf_token() }}">
+{{ super() }}
+<!-- Bootstrap CSS -->
+{{ bootstrap.load_css() }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="caculator-tab" data-bs-toggle="tab" data-bs-target="#caculator-tab-pane"
+                type="button" role="tab" aria-controls="caculator-tab-pane" aria-selected="true">🔢参数输入</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result-tab-pane"
+                type="button" role="tab" aria-controls="result-tab-pane" aria-selected="false">💹计算结果</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="method-tab" data-bs-toggle="tab" data-bs-target="#method-tab-pane"
+                type="button" role="tab" aria-controls="method-tab-pane" aria-selected="false">🧭方法对比</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="reference-tab" data-bs-toggle="tab" data-bs-target="#reference-tab-pane"
+                type="button" role="tab" aria-controls="reference-tab-pane" aria-selected="false">🛠公式参考</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="help-tab" data-bs-toggle="tab" data-bs-target="#help-tab-pane" type="button"
+                role="tab" aria-controls="help-tab-pane" aria-selected="false">❓帮助</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent" style="margin-top: 20px;">
+        <div class="tab-pane fade show active" id="caculator-tab-pane" role="tabpanel" aria-labelledby="caculator-tab"
+            tabindex="0">
+            <form action="#" method="post" id="input_form" class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col">
+                        <h3>欢迎使用乾勤电机参数计算器</h3>
+                        <p>请输入已知参数，系统将智能计算其他参数</p>
+                        <hr>
+                        <fieldset class="form-group">
+                            <legend class="fs-6">🔴 关键参数（必须输入）</legend>
+                            <div class="alert alert-primary" role="alert">
+                                这些参数是电机计算的基础，必须提供
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3 text-danger">极对数 p</span>
+                                <input type="text" class="form-control" id="pole_pairs" name="pole_pairs" required>
+                                <span class="input-group-text col-md-2">对</span>
+                                <div class="invalid-feedback">极对数为必需参数，请输入有效值</div>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3 text-danger">额定转速</span>
+                                <input type="text" class="form-control" id="rated_speed_rpm" name="rated_speed_rpm"
+                                    required>
+                                <span class="input-group-text col-md-2">r/min</span>
+                                <div class="invalid-feedback">额定转速为必需参数，请输入有效值</div>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3 text-danger">额定功率 P_rated</span>
+                                <input type="text" class="form-control" id="rated_power" name="rated_power" required>
+                                <span class="input-group-text col-md-2">KW</span>
+                                <div class="invalid-feedback">额定功率为必需参数，请输入有效值</div>
+                            </div>
+                        </fieldset>
+                        <hr>
+                        <fieldset class="form-group">
+                            <legend class="fs-6">🟠 重要参数（强烈建议输入）</legend>
+                            <div class="alert alert-primary" role="alert">
+                                这些参数对计算精度有重要影响，建议提供
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">额定电流 I_rated</span>
+                                <input type="text" class="form-control" id="rated_current" name="rated_current">
+                                <span class="input-group-text col-md-2">Arms</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">额定转矩 T</span>
+                                <input type="text" class="form-control" id="rated_torque" name="rated_torque">
+                                <span class="input-group-text col-md-2">Nm</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">磁链 Ψ</span>
+                                <input type="text" class="form-control" id="flux_linkage" name="flux_linkage">
+                                <span class="input-group-text col-md-2">Wb</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">定子电阻 R</span>
+                                <input type="text" class="form-control" id="stator_resistance" name="stator_resistance">
+                                <span class="input-group-text col-md-2">Ω</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">定子电感 L</span>
+                                <input type="text" class="form-control" id="stator_inductance" name="stator_inductance">
+                                <span class="input-group-text col-md-2">H</span>
+                            </div>
+                        </fieldset>
+                        <hr>
+                        <div class="row">
+                            <div class="col mb-3">
+                                <fieldset class="form-group">
+                                    <legend class="fs-6">🚀 智能计算操作</legend>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <input type="button" value="🚀 开始智能计算" class="btn btn-outline-primary btn-sm"
+                                            id="startCalculation">
+                                        <input type="button" value="🗑️ 清空输入" class="btn btn-outline-primary btn-sm"
+                                            id="resetForm">
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col mb-3">
+                                <fieldset class="form-group">
+                                    <legend class="fs-6">📊 数据管理</legend>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-primary dropdown-toggle btn-sm"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                📋 加载预设
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                {% for group, motors_in_group in power_groups.items() %}
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <h6 class="dropdown-header">{{ group }}</h6>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                {% for motor in motors_in_group %}
+                                                <li><a class="dropdown-item btn-sm" href="#" data-value="{{motor}}">{{
+                                                        motor }}</a></li>
+                                                {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <input type="button" value="💾 保存参数" class="btn btn-outline-secondary btn-sm"
+                                            id="saveParams">
+                                        <input type="button" value="📂 加载参数" class="btn btn-outline-secondary btn-sm"
+                                            id="loadParams">
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <legend class="fs-6">🟡 有用参数（提供更好）</legend>
+                            <div class="alert alert-primary" role="alert">
+                                这些参数有助于提高计算准确性和完整性
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">额定线反电动势 E</span>
+                                <input type="text" class="form-control" id="rated_line_back_emf"
+                                    name="rated_line_back_emf">
+                                <span class="input-group-text col-md-2">Vrms</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">额定线电压 UL</span>
+                                <input type="text" class="form-control" id="rated_line_voltage"
+                                    name="rated_line_voltage">
+                                <span class="input-group-text col-md-2">Vrms</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">母线电压 U_bus</span>
+                                <input type="text" class="form-control" id="bus_voltage" name="bus_voltage">
+                                <span class="input-group-text col-md-2">V</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">功率因数 cosφ</span>
+                                <input type="text" class="form-control" id="power_factor" name="power_factor">
+                                <span class="input-group-text col-md-2"></span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">效率 η</span>
+                                <input type="text" class="form-control" id="efficiency" name="efficiency">
+                                <span class="input-group-text col-md-2">%</span>
+                            </div>
+                        </fieldset>
+                        <hr>
+                        <fieldset class="form-group">
+                            <legend class="fs-6">🟢 可选参数（补充信息）</legend>
+                            <div class="alert alert-primary" role="alert">
+                                这些参数用于特殊分析或估算，可根据需要提供
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">转动惯量 J</span>
+                                <input type="text" class="form-control" id="moment_of_inertia" name="moment_of_inertia"
+                                    value="">
+                                <span class="input-group-text col-md-2">kg·m²</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">电机质量 m</span>
+                                <input type="text" class="form-control" id="motor_mass" name="motor_mass" value="">
+                                <span class="input-group-text col-md-2">kg</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">定子外径</span>
+                                <input type="text" class="form-control" id="stator_outer_diameter"
+                                    name="stator_outer_diameter" value="">
+                                <span class="input-group-text col-md-2">m</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">转子直径</span>
+                                <input type="text" class="form-control" id="rotor_diameter" name="rotor_diameter"
+                                    value="">
+                                <span class="input-group-text col-md-2">m</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">铁心长度</span>
+                                <input type="text" class="form-control" id="stack_length" name="stack_length" value="">
+                                <span class="input-group-text col-md-2">m</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">气隙长度</span>
+                                <input type="text" class="form-control" id="air_gap" name="air_gap" value="">
+                                <span class="input-group-text col-md-2">m</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">过载倍数</span>
+                                <input type="text" class="form-control" id="overload_factor" name="overload_factor">
+                                <span class="input-group-text col-md-2">倍</span>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <span class="input-group-text col-md-3">过载持续时间</span>
+                                <input type="text" class="form-control" id="overload_duration" name="overload_duration">
+                                <span class="input-group-text col-md-2">s</span>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <hr>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="result-tab-pane" role="tabpanel" aria-labelledby="result-tab" tabindex="0">
+            <div class="row">
+                <div class="col mb-3">
+                    <fieldset class="form-group">
+                        <legend class="fs-6">📁 结果保存与导出</legend>
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <input type="button" value="💾 保存结果" class="btn btn-outline-primary btn-sm" id="saveResults"
+                                disabled>
+                            <input type="button" value="📄 导出PDF" class="btn btn-outline-primary btn-sm"
+                                id="exportToPdf" disabled>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="container" id="resultsContainer">
+                <div class="row">
+                    <hr>
+                    <h2>智能电机参数计算报告</h2>
+                    <br>
+                </div>
+                <div class="row">
+                    <hr>
+                    <h5>📋 输入参数摘要</h5>
+                    <div class="row">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">参数</th>
+                                    <th scope="col">数值</th>
+                                    <th scope="col">单位</th>
+                                    <th scope="col">备注</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inputSummaryTableBody">
+                                <!-- Input parameters will be dynamically inserted here -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end">📈 输入参数总数：<span id="inputParamCount">0</span>个
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <hr>
+                    <h5>⚡ 核心电机参数</h5>
+                    <div class="row">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">参数名称</th>
+                                    <th scope="col">计算值</th>
+                                    <th scope="col">单位</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">计算方法</th>
+                                    <th scope="col">备注</th>
+                                </tr>
+                            </thead>
+                            <tbody id="coreParamsTableBody">
+                                <!-- Core parameters will be dynamically inserted here -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="6" class="text-end" id="coreParamsTableFoot"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <hr>
+                    <h5>🔌 电气特性参数</h5>
+                    <div class="row">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">参数名称</th>
+                                    <th scope="col">计算值</th>
+                                    <th scope="col">单位</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">计算方法</th>
+                                    <th scope="col">备注</th>
+                                </tr>
+                            </thead>
+                            <tbody id="electricalParamsTableBody">
+                                <!-- Electrical parameters will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <hr>
+                    <h5>⚙️ 机械特性参数</h5>
+                    <div class="row">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">参数名称</th>
+                                    <th scope="col">计算值</th>
+                                    <th scope="col">单位</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">计算方法</th>
+                                    <th scope="col">备注</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mechanicalParamsTableBody">
+                                <!-- Mechanical parameters will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <hr>
+                    <h5>📊 性能指标</h5>
+                    <div class="row">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">参数名称</th>
+                                    <th scope="col">计算值</th>
+                                    <th scope="col">单位</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">计算方法</th>
+                                    <th scope="col">备注</th>
+                                </tr>
+                            </thead>
+                            <tbody id="performanceIndicatorsTableBody">
+                                <!-- Performance indicators will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row invisible" id="overloadCharacteristicsDiv">
+                    <hr>
+                    <h5>🔥 过载特性</h5>
+                    <div class="row">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">参数名称</th>
+                                    <th scope="col">计算值</th>
+                                    <th scope="col">单位</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">计算方法</th>
+                                    <th scope="col">备注</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overloadCharacteristicsTableBody">
+                                <!-- Overload characteristics will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <hr>
+                    <h5>🎯 计算质量分析</h5>
+                    <div class="row">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th scope="col">置信度分布:</th>
+                                </tr>
+                            </thead>
+                            <tbody id="qualityAnalysisTableBody">
+                                <tr>
+                                    <td class="col-1"></td>
+                                    <th scope="row" class="col-3">高置信度 (≥90%)</th>
+                                    <td id="confidenceHigh"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <th scope="row">较高置信度 (70-89%)</th>
+                                    <td id="confidenceMiddleHigh"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <th scope="row">中等置信度 (50-69%)</th>
+                                    <td id="confidenceMiddle"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <th scope="row">低置信度 (<50%)</th>
+                                    <td id="confidenceLow"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" id="totalParamsQuality"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" id="qualityEvaluation"></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="tab-pane fade" id="method-tab-pane" role="tabpanel" aria-labelledby="method-tab" tabindex="0">...
+        </div>
+        <div class="tab-pane fade" id="reference-tab-pane" role="tabpanel" aria-labelledby="reference-tab" tabindex="0">
+            ...</div>
+        <div class="tab-pane fade" id="help-tab-pane" role="tabpanel" aria-labelledby="help-tab" tabindex="0">
+            ...</div>
+    </div>
+</div>
+
+{% block scripts %}
+<!-- Optional JavaScript -->
+{{ bootstrap.load_js() }}
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script>
+    $(document).ready(function () {
+        var csrftoken = $('meta[name=csrf-token]').attr('content');
+        // Attach click event to dropdown items
+        $('.dropdown-menu .dropdown-item').on('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+            const selectedValue = $(this).data('value'); // Get custom data attribute
+            console.log('Selected Value:', selectedValue); // Log or use the value
+
+
+            $.ajax({
+                beforeSend: function (xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                },
+                type: "GET",                                                       //提交的方法，进行计算
+                url: "api/get-motor-preset?motor_name=" + selectedValue,                                                  //提交的地址，视图函数
+                async: true,
+                error: function (request) {                                         //失败的话
+                    alert("连接错误");
+                },
+                success: function (data) {
+                    console.log('Received data:', data);
+                    // Populate form fields with received data
+                    $('#pole_pairs').val(data.pole_pairs);
+                    $('#rated_speed_rpm').val(data.rated_speed_rpm);
+                    $('#rated_power').val(data.rated_power);
+                    $('#rated_current').val(data.rated_current);
+                    $('#rated_torque').val(data.rated_torque);
+                    $('#flux_linkage').val(data.flux_linkage);
+                    $('#stator_resistance').val(data.stator_resistance);
+                    $('#stator_inductance').val(data.stator_inductance);
+                    $('#rated_line_back_emf').val(data.rated_line_back_emf);
+                    $('#rated_line_voltage').val(data.rated_line_voltage);
+                    $('#bus_voltage').val(data.bus_voltage);
+                    $('#power_factor').val(data.power_factor);
+                    $('#efficiency').val(data.efficiency);
+                    $('#moment_of_inertia').val(data.moment_of_inertia);
+                    $('#motor_mass').val(data.motor_mass);
+                    $('#stator_outer_diameter').val(data.stator_outer_diameter);
+                    $('#rotor_diameter').val(data.rotor_diameter);
+                    $('#stack_length').val(data.stack_length);
+                    $('#air_gap').val(data.air_gap);
+                    $('#overload_factor').val(data.overload_factor);
+                    $('#overload_duration').val(data.overload_duration);
+                }
+            });
+        });
+
+
+        $('#startCalculation').on('click', function (event) {
+            var form = document.querySelector("#input_form");
+            form.classList.add('was-validated');
+            var valid = form.checkValidity();
+            console.log('Form valid:', valid);
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+
+            console.log('开始智能计算'); // Log or use the value
+            var fields = $('#input_form').serializeArray();
+            var params = {}; //声明一个对象
+            $.each(fields, function (index, field) {
+                params[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+            })
+
+            $.ajax({
+                beforeSend: function (xhr, settings) {
+                    if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                },
+                type: "POST",                                                       //提交的方法，进行计算
+                url: "api/motor-calculate",                                                  //提交的地址，视图函数                                //提交的地址，视图函数
+                data: JSON.stringify(params),
+                async: true,
+                error: function (request) {                                         //失败的话
+                    alert("连接错误");
+                },
+                success: function (data) {
+                    console.log('Received data:', data);
+                    display_input_summary(params);
+
+                    display_core_parameters(data);
+                    display_electrical_parameters(data);
+                    display_mechanical_parameters(data);
+                    display_performance_indicators(data);
+                    display_overload_characteristics(data);
+                    display_quality_analysis(data);
+
+                    // Switch to the results tab
+                    var resultTab = new bootstrap.Tab(document.querySelector('#result-tab'));
+                    resultTab.show();
+
+                    // Enable result export buttons
+                    $('#saveResults').prop('disabled', false);
+                    $('#exportToPdf').prop('disabled', false);
+
+                }
+            });
+        });
+
+
+        $('#resetForm').on('click', function (event) {
+            document.getElementById("input_form").reset();
+            //$('#input_form').reset();
+        });
+
+
+        $('#saveParams').on('click', function (event) {
+            var fields = $('#input_form').serializeArray();
+            var params = {}; //声明一个对象
+            $.each(fields, function (index, field) {
+                params[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+            })
+            var jsonStr = JSON.stringify(params, null, 4);
+            var blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "motor_params.json";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+
+        $('#loadParams').on('click', function (event) {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = e => {
+                var file = e.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    try {
+                        var jsonData = JSON.parse(event.target.result);
+                        // Populate form fields with loaded data
+                        for (var key in jsonData) {
+                            if (jsonData.hasOwnProperty(key)) {
+                                $('#' + key).val(jsonData[key]);
+                            }
+                        }
+                    } catch (error) {
+                        alert("无效的JSON文件");
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        });
+
+        $('#saveResults').on('click', function (event) {
+            var resultContent = document.querySelector('#resultsContainer');
+            var htmlContent = '<html><head><meta charset="UTF-8"><title>电机参数计算结果</title>';
+            htmlContent += '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">';
+            htmlContent += '</head><body>';
+            htmlContent += '<div class="container-fluid">';
+            htmlContent += resultContent.innerHTML.replace(/ class=\"row\"/g, ''); 
+            htmlContent += '</div>';
+            htmlContent += '</body></html>';
+
+            var blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "motor_results.html";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        $('#exportToPdf').on('click', function (event) {
+            var resultContent = document.querySelector('#resultsContainer');
+            html2canvas(resultContent).then(function (canvas) {
+                var margin = 10;
+                var imgData = canvas.toDataURL('image/png');
+                var pdf = new jsPDF('p', 'mm', 'a4');
+                var imgWidth = 210 - 2 * margin; // A4 width in mm
+                var pageHeight = 295 - 2 * margin; // A4 height in mm
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+                var heightLeft = imgHeight;
+
+                pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                pdf.save('motor_results.pdf');
+            });
+        });
+    });
+
+    function display_input_summary(params) {
+        var optional_params = [
+            { name: '极对数', value: params.pole_pairs, unit: '' },
+            { name: '额定转速', value: params.rated_speed_rpm, unit: 'r/min' },
+            { name: '定子电阻', value: params.stator_resistance, unit: 'Ω' },
+            { name: '定子电感', value: params.stator_inductance, unit: 'H' },
+            { name: '磁链', value: params.flux_linkage, unit: 'Wb' },
+            { name: '额定电流', value: params.rated_current, unit: 'A' },
+            { name: '额定线反电势', value: params.rated_line_back_emf, unit: 'V' },
+            { name: '母线电压', value: params.bus_voltage, unit: 'V' },
+            { name: '额定转矩', value: params.rated_torque, unit: 'Nm' },
+            { name: '转动惯量', value: params.moment_of_inertia, unit: 'kg·m²' },
+            { name: '电机质量', value: params.motor_mass, unit: 'kg' },
+            { name: '额定功率', value: params.rated_power, unit: 'KW' },
+            { name: '功率因数', value: params.power_factor, unit: '' },
+            { name: '效率', value: params.efficiency, unit: '%' },
+            { name: '过载倍数', value: params.overload_factor, unit: '' },
+            { name: '过载持续时间', value: params.overload_duration, unit: 's' }
+        ];
+
+        $("#inputSummaryTableBody").empty();
+        optional_params.forEach(function (p) {
+            if (p.value !== undefined && p.value !== null && p.value !== '') {
+                var newRow = "<tr><th scope='row'>" + p.name + "</th><td>" + (p.value) + "</td><td>" + p.unit + "</td><td></td></tr>";
+                $("#inputSummaryTableBody").append(newRow);
+            }
+        });
+        document.getElementById('inputParamCount').innerText = $("#inputSummaryTableBody tr").length;
+    }
+
+    function appendRow(tableBody, parameter) {
+        if (!parameter || !parameter.value) {
+            return;
+        }
+        var name = parameter.name;
+        var value = parameter.value.value;
+        var unit = parameter.unit;
+        var confidence = parameter.value.confidence;
+        var method = parameter.value.method;
+        var notes = parameter.value.notes;
+        var row = "<tr><th scope='row'>" + name + "</th><td>" + roundToSix(value) + "</td><td>" + unit + "</td><td>" + getConfidenceIcon(confidence) + " " + confidence + "</td><td>" + convertMethod(method) + "</td><td>" + convertMethod(notes) + "</td></tr>";
+        tableBody.append(row);
+    }
+
+    function display_core_parameters(results) {
+        var core_params = [
+            { name: '角速度', value: results.rated_angular_velocity, unit: 'rad/s' },
+            { name: '反电动势常数(Ke)', value: results.back_emf_constant, unit: 'V·s/rad' },
+            { name: '转矩常数(Kt)', value: results.torque_constant, unit: 'Nm/A' },
+            { name: '磁链', value: results.flux_linkage, unit: 'Wb' }
+        ];
+
+        $("#coreParamsTableBody").empty();
+        core_params.forEach(function (p) {
+            appendRow($("#coreParamsTableBody"), p);
+        });
+
+        if ('torque_constant' in results && 'back_emf_constant' in results) {
+            var kt_value = results.torque_constant.value;
+            var ke_value = results.back_emf_constant.value;
+            var ratio = ke_value !== 0 ? kt_value / ke_value : 0;
+
+            var footText = "💡 Kt/Ke比值：" + ratio + " ";
+            if (Math.abs(ratio - 1.5) < 0.1) {
+                footText += "✅ (符合理论值1.5)";
+            } else {
+                footText += "⚠️ (偏离理论值1.5)";
+            }
+            document.getElementById('coreParamsTableFoot').innerText = footText;
+        }
+    }
+
+    function display_electrical_parameters(results) {
+        var electrical_params = [
+            { name: '定子电阻', value: results.stator_resistance, unit: 'Ω' },
+            { name: '定子电感', value: results.stator_inductance, unit: 'H' },
+            { name: '反电动势(相)', value: results.rated_phase_back_emf, unit: 'V' },
+            { name: '反电动势(线)', value: results.rated_line_back_emf, unit: 'V' },
+            { name: '额定线电压', value: results.rated_line_voltage, unit: 'V' },
+            { name: '额定相电压', value: results.rated_phase_voltage, unit: 'V' },
+            { name: '母线电压', value: results.bus_voltage, unit: 'V' },
+            { name: '额定电流', value: results.rated_current, unit: 'A' },
+            { name: '峰值电流', value: results.peak_current, unit: 'A' },
+            { name: '电气频率', value: results.electrical_frequency, unit: 'Hz' },
+            { name: '感抗', value: results.reactance, unit: 'Ω' },
+            { name: '总阻抗', value: results.impedance, unit: 'Ω' },
+            { name: '电感时间常数', value: results.inductance_time_constant, unit: 's' }
+        ];
+
+
+        $("#electricalParamsTableBody").empty();
+        electrical_params.forEach(function (p) {
+            appendRow($("#electricalParamsTableBody"), p);
+        });
+    }
+
+    function display_mechanical_parameters(results) {
+        var mechanical_params = [
+            { name: '额定转矩', value: results.rated_torque, unit: 'Nm' },
+            { name: '转动惯量', value: results.moment_of_inertia, unit: 'kg·m²' }
+        ];
+
+        $("#mechanicalParamsTableBody").empty();
+        mechanical_params.forEach(function (p) {
+            appendRow($("#mechanicalParamsTableBody"), p);
+        });
+    }
+
+    function display_performance_indicators(results) {
+        var performance_params = [
+            { name: '额定功率', value: results.rated_power, unit: 'KW' },
+            { name: '机械功率', value: results.mechanical_power, unit: 'KW' },
+            { name: '电气功率', value: results.electrical_power, unit: 'KW' },
+            { name: '效率', value: results.efficiency, unit: '%' },
+            { name: '总损耗', value: results.total_losses, unit: 'KW' },
+            { name: '铜损耗', value: results.copper_losses, unit: 'KW' }
+        ];
+
+        $("#performanceIndicatorsTableBody").empty();
+        performance_params.forEach(function (p) {
+            appendRow($("#performanceIndicatorsTableBody"), p);
+        });
+    }
+
+    function display_overload_characteristics(results) {
+        if (results.overload_current == undefined || results.overload_current == null) {
+            $("#overloadCharacteristicsTableBody").empty();
+            $("#overloadCharacteristicsDiv").hide();
+        } else {
+            var overload_params = [
+                { name: '过载电流', value: results.overload_current, unit: 'A' },
+                { name: '过载转矩', value: results.overload_torque, unit: 'Nm' },
+                { name: '过载功率', value: results.overload_power ? results.overload_power / 1000 : null, unit: 'KW' },
+                { name: '过载铜损', value: results.overload_losses, unit: 'W' },
+                { name: '过载相电压', value: results.overload_phase_voltage, unit: 'V' },
+                { name: '过载线电压', value: results.overload_line_voltage, unit: 'V' },
+                { name: '过载母线电压', value: results.overload_bus_voltage, unit: 'V' },
+                { name: '热时间常数', value: results.overload_bus_voltage, unit: 's' }
+            ];
+
+            $("#overloadCharacteristicsTableBody").empty();
+            $("#overloadCharacteristicsDiv").show();
+            performance_params.forEach(function (p) {
+                appendRow($("#overloadCharacteristicsTableBody"), p);
+            });
+        }
+    }
+
+    function display_quality_analysis(results) {
+        // 计算质量分析
+        var confidence_stats = analyzeConfidence(results);
+        var total_params = Object.values(confidence_stats).reduce((a, b) => a + b, 0);
+
+        document.getElementById('confidenceHigh').innerText = "🟢" + confidence_stats["高置信度 (≥90%)"] + "个 （" + roundToTwo(confidence_stats["高置信度 (≥90%)"] / total_params * 100) + "%）";
+        document.getElementById('confidenceMiddleHigh').innerText = "🟡" + confidence_stats["较高置信度 (70-89%)"] + "个 （" + roundToTwo(confidence_stats["较高置信度 (70-89%)"] / total_params * 100) + "%）";
+        document.getElementById('confidenceMiddle').innerText = "🟠" + confidence_stats["中等置信度 (50-69%)"] + "个 （" + roundToTwo(confidence_stats["中等置信度 (50-69%)"] / total_params * 100) + "%）";
+        document.getElementById('confidenceLow').innerText = "🔴" + confidence_stats["低置信度 (<50%)"] + "个 （" + roundToTwo(confidence_stats["低置信度 (<50%)"] / total_params * 100) + "%）";
+
+
+        document.getElementById('totalParamsQuality').innerText = `📊 计算参数总数: ${total_params} 个`;
+
+
+        // 计算质量评估
+        var high_confidence = confidence_stats["高置信度 (≥90%)"] || 0;
+        var quality_score = total_params > 0 ? (high_confidence / total_params * 100) : 0;
+        var quality_text = quality_score >= 80 ? "🌟 优秀"
+            : quality_score >= 60 ? "👍 良好"
+                : quality_score >= 40 ? "⚠️ 一般"
+                    : "❌ 需改进";
+        document.getElementById('qualityEvaluation').innerText = `🎯 计算质量评级: ${quality_text} (${quality_score.toFixed(1)}% 高置信度)`;
+    }
+
+    function getConfidenceIcon(confidence) {
+        if (confidence >= 0.9) {
+            return "🟢";
+        } else if (confidence >= 0.7) {
+            return "🟡";
+        } else {
+            return "🔴";
+        }
+    }
+
+    function getClass4Confidence(confidence) {
+        if (confidence >= 0.9) {
+            return "table-success";
+        } else if (confidence >= 0.7) {
+            return "table-warning";
+        } else {
+            return "table-danger";
+        }
+    }
+
+    function convertMethod(method) {
+        switch (method) {
+            case 'theoretical':
+                return '理论计算';
+            case 'user_input':
+                return '用户输入';
+            case 'estimation':
+                return '工程估算';
+            case 'empirical':
+                return '经验公式';
+            default:
+                return method;
+        }
+    }
+    function roundToTwo(num) {
+        return roundTo(num, 2);
+    }
+    function roundToSix(num) {
+        return roundTo(num, 6);
+    }
+    function roundTo(num, digits) {
+        if (("" + num).indexOf('.') > -1) {
+            return parseFloat(num).toFixed(digits);
+        }
+        return num;
+    }
+    function analyzeConfidence(results) {
+        // 置信度统计
+        var confidence_levels = {
+            "高置信度 (≥90%)": 0,
+            "较高置信度 (70-89%)": 0,
+            "中等置信度 (50-69%)": 0,
+            "低置信度 (<50%)": 0
+        };
+
+        for (var key in results) {
+            if (results.hasOwnProperty(key) && !key.startsWith('_')) {
+                var attr = results[key];
+                // Check if attr is an object and has a confidence property
+                if (attr && typeof attr === 'object' && 'confidence' in attr) {
+                    var confidence = attr.confidence * 100;
+                    if (confidence >= 90) {
+                        confidence_levels["高置信度 (≥90%)"] += 1;
+                    } else if (confidence >= 70) {
+                        confidence_levels["较高置信度 (70-89%)"] += 1;
+                    } else if (confidence >= 50) {
+                        confidence_levels["中等置信度 (50-69%)"] += 1;
+                    } else {
+                        confidence_levels["低置信度 (<50%)"] += 1;
+                    }
+                }
+            }
+        }
+        return confidence_levels;
+    }
+
+</script>
+
+{% endblock %}
+{% endblock %}

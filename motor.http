@@ -1,0 +1,18 @@
+POST http://localhost:5000/api/motor-calculate HTTP/1.1
+content-type: application/json
+
+{
+  "pole_pairs": "2",
+  "rated_speed_rpm": "2800",
+  "rated_power": "0.1",
+  "rated_current": "0.8",
+  "rated_torque": "0.34",
+  "stator_resistance": "8.5",
+  "stator_inductance": "0.025",
+  "rated_line_voltage": "110",
+  "power_factor": "0.75",
+  "efficiency": "80",
+  "motor_mass": "0.8",
+  "_saved_time": "2025-09-22T20:41:25.926482",
+  "_version": "1.0"
+}

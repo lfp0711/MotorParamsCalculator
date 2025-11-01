@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}{% endblock %} - 乾勤科技</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div id="content" style="min-height: 600px;">{% block content %}{% endblock %}</div>
+    <div id="footer" class="text-center mt-4">
+      {% block footer %}
+      &copy; 版权所有 2025 by <a href="http://www.qianqin.com.cn/">北京乾勤科技发展有限公司</a> 京ICP备09029336号
+      {% endblock %}
+    </div>
+  </body>
+</html>

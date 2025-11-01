@@ -1,0 +1,8 @@
+
+Flask
+bootstrap-flask
+Flask-CKEditor
+flask-csrf
+Flask-DebugToolbar
+Flask-FileUpload
+numpy
