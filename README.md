@@ -14,12 +14,6 @@ pip install -r requirements.txt
 python main.py
 
 
-```
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-python main.py
-
-
 # Docker
 To build and run the container locally:
 ```
@@ -27,5 +21,7 @@ docker build -t motor-calculator:latest .
 docker run -p 5000:5000 motor-calculator:latest
 
 docker run -p 80:80 nginx
+
+docker compose up
 ```
 
