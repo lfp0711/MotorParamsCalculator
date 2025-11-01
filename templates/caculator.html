@@ -452,9 +452,9 @@
 {% block scripts %}
 <!-- Optional JavaScript -->
 {{ bootstrap.load_js() }}
-<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script src="static/js/jquery-3.7.1.min.js"></script>
+<script src="static/js/jspdf.min.js"></script>
+<script src="static/js/html2canvas.js"></script>
 <script>
     $(document).ready(function () {
         var csrftoken = $('meta[name=csrf-token]').attr('content');

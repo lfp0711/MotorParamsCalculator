@@ -25,5 +25,5 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     logger.info('Started')
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
 

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 @bp.route('/')
 def home():
     logger.info('Home page accessed')
-    return redirect(url_for('calculator.index'))
+    return redirect('calculator')
 
 @bp.route("/calculator", methods=["GET"])
 def index():

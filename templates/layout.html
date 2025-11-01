@@ -1,19 +1,36 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    {% block head %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>{% block title %}{% endblock %} - 乾勤科技</title>
-    {% endblock %}
-  </head>
-  <body>
-    <div id="content" style="min-height: 600px;">{% block content %}{% endblock %}</div>
-    <div id="footer" class="text-center mt-4">
-      {% block footer %}
-      &copy; 版权所有 2025 by <a href="http://www.qianqin.com.cn/">北京乾勤科技发展有限公司</a> 京ICP备09029336号
-      {% endblock %}
-    </div>
-  </body>
+
+<head>
+  {% block head %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="static/style.css">
+  <title>{% block title %}{% endblock %} - 乾勤科技</title>
+  {% endblock %}
+</head>
+
+<body>
+  <div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom"> <a
+        href="http://www.qianqin.com.cn/"
+        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <img src="static/images/qianqin_logo.png" alt="Logo" width="120" height="70" class="me-2">
+        <span class="fs-6" style="color:#777777">英飞凌第三方伙伴<br>Infineon Third Party</span> </a>
+      <ul class="nav nav-pills">
+        <li class="nav-item"><a href="http://www.qianqin.com.cn/yjsy" class="nav-link">乾勤官网</a></li>
+        <li class="nav-item"><a href="http://www.qianqin.com.cn/zncds" class="nav-link">智能车大赛</a></li>
+        <li class="nav-item"><a href="https://qianqinkeji.world.taobao.com/" class="nav-link">乾勤淘宝店</a></li>
+        <li class="nav-item"><a href="https://space.bilibili.com/551981792" class="nav-link">我们的B站</a></li>
+      </ul>
+    </header>
+  </div>
+
+  <div id="content" style="min-height: 600px;">{% block content %}{% endblock %}</div>
+  <div class="container">
+    <footer class="text-center">
+      <p class="text-body-secondary">© 2025 北京乾勤科技发展有限公司</p>
+    </footer>
+  </div>
+</body>
 </html>
