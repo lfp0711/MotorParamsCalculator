@@ -4,7 +4,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 {{ super() }}
 <!-- Bootstrap CSS -->
-{{ bootstrap.load_css() }}
+<link rel="stylesheet" href="static/css/bootstrap.min.css">
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -17,10 +17,10 @@
             <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result-tab-pane"
                 type="button" role="tab" aria-controls="result-tab-pane" aria-selected="false">💹计算结果</button>
         </li>
-        <li class="nav-item" role="presentation">
+        <!-- <li class="nav-item" role="presentation">
             <button class="nav-link" id="method-tab" data-bs-toggle="tab" data-bs-target="#method-tab-pane"
                 type="button" role="tab" aria-controls="method-tab-pane" aria-selected="false">🧭方法对比</button>
-        </li>
+        </li> -->
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="reference-tab" data-bs-toggle="tab" data-bs-target="#reference-tab-pane"
                 type="button" role="tab" aria-controls="reference-tab-pane" aria-selected="false">🛠公式参考</button>
@@ -38,6 +38,54 @@
                     <div class="col">
                         <h3>欢迎使用乾勤电机参数计算器</h3>
                         <p>请输入已知参数，系统将智能计算其他参数</p>
+                        <hr>
+                        <div class="row">
+                            <div class="col mb-3">
+                                <fieldset class="form-group">
+                                    <!-- <legend class="fs-6">🚀 智能计算操作</legend> -->
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <input type="button" value="🚀 开始智能计算" class="btn btn-outline-primary btn-sm"
+                                            id="startCalculation">
+                                        <input type="button" value="🗑️ 清空输入" class="btn btn-outline-primary btn-sm"
+                                            id="resetForm">
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col mb-3">
+                                <fieldset class="form-group">
+                                    <!-- <legend class="fs-6">📊 数据管理</legend> -->
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-primary dropdown-toggle btn-sm"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                📋 加载预设
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                {% for group, motors_in_group in power_groups.items() %}
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <h6 class="dropdown-header">{{ group }}</h6>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                {% for motor in motors_in_group %}
+                                                <li><a class="dropdown-item btn-sm" href="#" data-value="{{motor}}">{{
+                                                        motor }}</a></li>
+                                                {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <input type="button" value="💾 保存参数" class="btn btn-outline-secondary btn-sm"
+                                            id="saveParams">
+                                        <input type="button" value="📂 加载参数" class="btn btn-outline-secondary btn-sm"
+                                            id="loadParams">
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
                         <hr>
                         <fieldset class="form-group">
                             <legend class="fs-6">🔴 关键参数（必须输入）</legend>
@@ -96,54 +144,6 @@
                                 <span class="input-group-text col-md-2">H</span>
                             </div>
                         </fieldset>
-                        <hr>
-                        <div class="row">
-                            <div class="col mb-3">
-                                <fieldset class="form-group">
-                                    <legend class="fs-6">🚀 智能计算操作</legend>
-                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                        <input type="button" value="🚀 开始智能计算" class="btn btn-outline-primary btn-sm"
-                                            id="startCalculation">
-                                        <input type="button" value="🗑️ 清空输入" class="btn btn-outline-primary btn-sm"
-                                            id="resetForm">
-                                    </div>
-                                </fieldset>
-                            </div>
-                            <div class="col mb-3">
-                                <fieldset class="form-group">
-                                    <legend class="fs-6">📊 数据管理</legend>
-                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-primary dropdown-toggle btn-sm"
-                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                📋 加载预设
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                {% for group, motors_in_group in power_groups.items() %}
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                <li>
-                                                    <h6 class="dropdown-header">{{ group }}</h6>
-                                                </li>
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                {% for motor in motors_in_group %}
-                                                <li><a class="dropdown-item btn-sm" href="#" data-value="{{motor}}">{{
-                                                        motor }}</a></li>
-                                                {% endfor %}
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                        <input type="button" value="💾 保存参数" class="btn btn-outline-secondary btn-sm"
-                                            id="saveParams">
-                                        <input type="button" value="📂 加载参数" class="btn btn-outline-secondary btn-sm"
-                                            id="loadParams">
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
@@ -238,7 +238,7 @@
             <div class="row">
                 <div class="col mb-3">
                     <fieldset class="form-group">
-                        <legend class="fs-6">📁 结果保存与导出</legend>
+                        <!-- <legend class="fs-6">📁 结果保存与导出</legend> -->
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <input type="button" value="💾 保存结果" class="btn btn-outline-primary btn-sm" id="saveResults"
                                 disabled>
@@ -290,8 +290,9 @@
                                     <th scope="col">参数名称</th>
                                     <th scope="col">计算值</th>
                                     <th scope="col">单位</th>
-                                    <th scope="col">置信度</th>
                                     <th scope="col">计算方法</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">公式</th>
                                     <th scope="col">备注</th>
                                 </tr>
                             </thead>
@@ -300,7 +301,7 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="6" class="text-end" id="coreParamsTableFoot"></td>
+                                    <td colspan="7" class="text-end" id="coreParamsTableFoot"></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -317,8 +318,9 @@
                                     <th scope="col">参数名称</th>
                                     <th scope="col">计算值</th>
                                     <th scope="col">单位</th>
-                                    <th scope="col">置信度</th>
                                     <th scope="col">计算方法</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">公式</th>
                                     <th scope="col">备注</th>
                                 </tr>
                             </thead>
@@ -339,8 +341,9 @@
                                     <th scope="col">参数名称</th>
                                     <th scope="col">计算值</th>
                                     <th scope="col">单位</th>
-                                    <th scope="col">置信度</th>
                                     <th scope="col">计算方法</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">公式</th>
                                     <th scope="col">备注</th>
                                 </tr>
                             </thead>
@@ -361,8 +364,9 @@
                                     <th scope="col">参数名称</th>
                                     <th scope="col">计算值</th>
                                     <th scope="col">单位</th>
-                                    <th scope="col">置信度</th>
                                     <th scope="col">计算方法</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">公式</th>
                                     <th scope="col">备注</th>
                                 </tr>
                             </thead>
@@ -383,8 +387,9 @@
                                     <th scope="col">参数名称</th>
                                     <th scope="col">计算值</th>
                                     <th scope="col">单位</th>
-                                    <th scope="col">置信度</th>
                                     <th scope="col">计算方法</th>
+                                    <th scope="col">置信度</th>
+                                    <th scope="col">公式</th>
                                     <th scope="col">备注</th>
                                 </tr>
                             </thead>
@@ -443,7 +448,205 @@
         <div class="tab-pane fade" id="method-tab-pane" role="tabpanel" aria-labelledby="method-tab" tabindex="0">...
         </div>
         <div class="tab-pane fade" id="reference-tab-pane" role="tabpanel" aria-labelledby="reference-tab" tabindex="0">
-            ...</div>
+
+            <h4 class="section-title">📚 电机计算器变量定义参考</h4>
+            <p class="subtitle">严谨的变量定义和说明，避免符号歧义</p>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="var-definition-tab" data-bs-toggle="tab"
+                        data-bs-target="#var-definition" type="button" role="tab" aria-controls="var-definition"
+                        aria-selected="true">🔣 变量定义</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="formula-definition-tab" data-bs-toggle="tab" data-bs-target="#formula-definition"
+                        type="button" role="tab" aria-controls="formula-definition" aria-selected="false">📐 公式定义</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="var-definition" role="tabpanel">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-light">
+                            <tr class="table-primary">
+                                <th scope="col" style="width: 25%">变量名</th>
+                                <th scope="col" style="width: 35%">描述</th>
+                                <th scope="col" style="width: 20%">单位</th>
+                                <th scope="col" style="width: 20%">符号</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 基本参数 -->
+                            <tr class="table-info">
+                                <td colspan="4">基本参数</td>
+                            </tr>
+                            <tr>
+                                <td>pole_pairs</td>
+                                <td>极对数</td>
+                                <td>对</td>
+                                <td>p</td>
+                            </tr>
+                            <tr>
+                                <td>rated_power</td>
+                                <td>额定功率</td>
+                                <td>KW</td>
+                                <td>P_rated</td>
+                            </tr>
+                            <tr>
+                                <td>rated_speed</td>
+                                <td>额定转速</td>
+                                <td>r/min</td>
+                                <td>n</td>
+                            </tr>
+                            <tr>
+                                <td>rated_torque</td>
+                                <td>额定转矩</td>
+                                <td>Nm</td>
+                                <td>T</td>
+                            </tr>
+                            <tr>
+                                <td>rated_frequency</td>
+                                <td>额定频率</td>
+                                <td>Hz</td>
+                                <td>f</td>
+                            </tr>
+
+                            <!-- 电气参数 - 星型连接 -->
+                            <tr class="table-info">
+                                <td colspan="4">电气参数 - 星型连接</td>
+                            </tr>
+                            <tr>
+                                <td>stator_resistance</td>
+                                <td>定子电阻</td>
+                                <td>Ω</td>
+                                <td>R</td>
+                            </tr>
+                            <tr>
+                                <td>stator_inductance</td>
+                                <td>定子电感</td>
+                                <td>H</td>
+                                <td>L</td>
+                            </tr>
+                            <tr>
+                                <td>flux_linkage</td>
+                                <td>磁链</td>
+                                <td>Wb</td>
+                                <td>Ψ</td>
+                            </tr>
+                            <tr>
+                                <td>power_factor</td>
+                                <td>功率因数</td>
+                                <td>-</td>
+                                <td>cosφ</td>
+                            </tr>
+
+                            <!-- 反电动势参数 -->
+                            <tr class="table-info">
+                                <td colspan="4">反电动势参数</td>
+                            </tr>
+                            <tr>
+                                <td>rated_line_back_emf</td>
+                                <td>额定线反电动势</td>
+                                <td>Vrms</td>
+                                <td>E</td>
+                            </tr>
+                            <tr>
+                                <td>rated_phase_back_emf</td>
+                                <td>额定相反电动势</td>
+                                <td>Vrms</td>
+                                <td>E_ph</td>
+                            </tr>
+
+                            <!-- 电压参数 -->
+                            <tr class="table-info">
+                                <td colspan="4">电压参数</td>
+                            </tr>
+                            <tr>
+                                <td>rated_line_voltage</td>
+                                <td>额定线电压</td>
+                                <td>Vrms</td>
+                                <td>UL</td>
+                            </tr>
+                            <tr>
+                                <td>rated_phase_voltage</td>
+                                <td>额定相电压</td>
+                                <td>Vrms</td>
+                                <td>U_ph</td>
+                            </tr>
+
+                            <!-- 电流参数 -->
+                            <tr class="table-info">
+                                <td colspan="4">电流参数</td>
+                            </tr>
+                            <tr>
+                                <td>rated_current</td>
+                                <td>额定电流</td>
+                                <td>Arms</td>
+                                <td>I_rated</td>
+                            </tr>
+                            <tr>
+                                <td>peak_current</td>
+                                <td>峰值电流</td>
+                                <td>A</td>
+                                <td>I_peak</td>
+                            </tr>
+
+                            <!-- 机械参数 -->
+                            <tr class="table-info">
+                                <td colspan="4">机械参数</td>
+                            </tr>
+                            <tr>
+                                <td>moment_of_inertia</td>
+                                <td>转动惯量</td>
+                                <td>kg·m²</td>
+                                <td>J</td>
+                            </tr>
+                            <tr>
+                                <td>mechanical_power</td>
+                                <td>机械功率</td>
+                                <td>W</td>
+                                <td>P_mech</td>
+                            </tr>
+
+                            <!-- 效率和损耗 -->
+                            <tr class="table-info">
+                                <td colspan="4">效率和损耗</td>
+                            </tr>
+                            <tr>
+                                <td>efficiency</td>
+                                <td>效率</td>
+                                <td>%</td>
+                                <td>η</td>
+                            </tr>
+                            <tr>
+                                <td>copper_losses</td>
+                                <td>铜损</td>
+                                <td>W</td>
+                                <td>P_cu</td>
+                            </tr>
+
+                            <!-- 过载相关参数 -->
+                            <tr class="table-info">
+                                <td colspan="4">过载相关参数</td>
+                            </tr>
+                            <tr>
+                                <td>overload_factor</td>
+                                <td>过载倍数</td>
+                                <td>倍</td>
+                                <td>k_overload</td>
+                            </tr>
+                            <tr>
+                                <td>overload_duration</td>
+                                <td>过载持续时间</td>
+                                <td>s</td>
+                                <td>T_overload</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="formula-definition" role="tabpanel" aria-labelledby="formula-definition-tab">
+                    
+                </div>
+            </div>
+        </div>
         <div class="tab-pane fade" id="help-tab-pane" role="tabpanel" aria-labelledby="help-tab" tabindex="0">
             <div class="card">
                 <div class="card-header bg-info text-white">
@@ -496,10 +699,11 @@
 
 {% block scripts %}
 <!-- Optional JavaScript -->
-{{ bootstrap.load_js() }}
 <script src="static/js/jquery-3.7.1.min.js"></script>
 <script src="static/js/jspdf.min.js"></script>
 <script src="static/js/html2canvas.js"></script>
+<script src="static/js/popper.min.js"></script>
+<script src="static/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
         var csrftoken = $('meta[name=csrf-token]').attr('content');
@@ -736,10 +940,19 @@
         var name = parameter.name;
         var value = parameter.value.value;
         var unit = parameter.unit;
-        var confidence = parameter.value.confidence;
         var method = parameter.value.method;
+        var confidence = parameter.value.confidence;
+        var formula = parameter.value.formula;
         var notes = parameter.value.notes;
-        var row = "<tr><th scope='row'>" + name + "</th><td>" + roundToSix(value) + "</td><td>" + unit + "</td><td>" + getConfidenceIcon(confidence) + " " + confidence + "</td><td>" + convertMethod(method) + "</td><td>" + convertMethod(notes) + "</td></tr>";
+        var row = "<tr>"
+            + "<th scope='row'>" + name + "</th>"
+            + "<td>" + roundToSix(value) + "</td>"
+            + "<td>" + unit + "</td>"
+            + "<td>" + convertMethod(method) + "</td>"
+            + "<td>" + getConfidenceIcon(confidence) + " " + confidence + "</td>"
+            + "<td>" + formula + "</td>"
+            + "<td>" + convertMethod(notes) + "</td>"
+            + "</tr>";
         tableBody.append(row);
     }
 

@@ -17,6 +17,7 @@ csrf = CSRFProtect(app)
 app.register_blueprint(bp)
 app.json.ensure_ascii = False
 
+app.config['BOOTSTRAP_SERVE_LOCAL'] = True
 print(app.url_map)
 
 # 配置日志

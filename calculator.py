@@ -33,11 +33,10 @@ def motor_calculate():
     # Convert results to dict (implement .to_dict() if needed)
     return jsonify(results.__dict__)
 
-
-
 @bp.route('/api/get-motor-preset', methods=['GET'])
 def get_motor_preset():
     motor_name = request.args.get('motor_name') 
     logger.info(f'Received request: {motor_name}')
     return jsonify(motors.get(motor_name))
+
 
