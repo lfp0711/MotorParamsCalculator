@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乾勤电机参数计算器 - 公式参考</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 左侧导航栏 -->
+            <div class="col-3 vh-100 border-end overflow-auto position-fixed bg-light">
+                <div class="sticky-top bg-light pt-3">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">🔍</span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="搜索公式...">
+                        <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">清除</button>
+                    </div>
+                </div>
+
+                <nav class="nav flex-column mb-4" id="formulaNav">
+                    <!-- 基本电机关系 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">⚡ 基本电机关系</div>
+                        <a class="nav-link py-1 ps-3" href="#angular_velocity">角速度转换</a>
+                        <a class="nav-link py-1 ps-3" href="#electrical_frequency">电气频率</a>
+                    </div>
+
+                    <!-- 磁链计算 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">🧲 磁链计算</div>
+                        <a class="nav-link py-1 ps-3" href="#flux_linkage_from_voltage">从电压计算磁链</a>
+                        <a class="nav-link py-1 ps-3" href="#flux_linkage_from_torque">从转矩计算磁链</a>
+                        <a class="nav-link py-1 ps-3" href="#flux_linkage_from_power">从功率计算磁链</a>
+                    </div>
+
+                    <!-- 电机常数 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">🔧 电机常数</div>
+                        <a class="nav-link py-1 ps-3" href="#back_emf_constant_phase">反电动势常数Ke定义</a>
+                        <a class="nav-link py-1 ps-3" href="#back_emf_constant_from_voltage">反电动势常数Ke计算</a>
+                        <a class="nav-link py-1 ps-3" href="#torque_constant">转矩常数Kt定义</a>
+                        <a class="nav-link py-1 ps-3" href="#torque_constant_from_measurement">转矩常数Kt计算</a>
+                        <a class="nav-link py-1 ps-3" href="#kt_ke_relationship">Kt与Ke关系</a>
+                    </div>
+
+                    <!-- 功率计算 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">💪 功率计算</div>
+                        <a class="nav-link py-1 ps-3" href="#mechanical_power">机械功率</a>
+                        <a class="nav-link py-1 ps-3" href="#electrical_power_3phase">三相电功率</a>
+                        <a class="nav-link py-1 ps-3" href="#apparent_power">视在功率</a>
+                        <a class="nav-link py-1 ps-3" href="#reactive_power">无功功率</a>
+                    </div>
+
+                    <!-- 电阻电感 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">🔌 电阻电感</div>
+                        <a class="nav-link py-1 ps-3" href="#resistance_from_losses">基于铜损的电阻计算</a>
+                        <a class="nav-link py-1 ps-3" href="#resistance_empirical">电阻经验估算</a>
+                        <a class="nav-link py-1 ps-3" href="#inductance_geometric">几何电感计算</a>
+                        <a class="nav-link py-1 ps-3" href="#inductance_empirical">电感经验估算</a>
+                        <a class="nav-link py-1 ps-3" href="#inductance_from_power">从功率估算电感</a>
+                    </div>
+
+                    <!-- 电压关系 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">⚡ 电压关系</div>
+                        <a class="nav-link py-1 ps-3" href="#phase_voltage_relationship">相电压与线电压关系</a>
+                        <a class="nav-link py-1 ps-3" href="#rated_voltage_complex">精确额定相电压计算</a>
+                        <a class="nav-link py-1 ps-3" href="#rated_line_voltage_from_phase">额定线电压计算</a>
+                        <a class="nav-link py-1 ps-3" href="#rated_voltage_simple">简化额定线电压计算</a>
+                        <a class="nav-link py-1 ps-3" href="#rated_voltage_from_current">基于电流的线电压计算</a>
+                    </div>
+
+                    <!-- 电流与频率 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">⚡ 电流与频率</div>
+                        <a class="nav-link py-1 ps-3" href="#current_peak">峰值电流计算</a>
+                        <a class="nav-link py-1 ps-3" href="#frequency">电气频率计算</a>
+                        <a class="nav-link py-1 ps-3" href="#reactance">感抗计算</a>
+                        <a class="nav-link py-1 ps-3" href="#impedance">总阻抗计算</a>
+                    </div>
+
+                    <!-- 损耗和效率 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">📊 损耗和效率</div>
+                        <a class="nav-link py-1 ps-3" href="#copper_losses">铜损计算</a>
+                        <a class="nav-link py-1 ps-3" href="#total_losses_from_efficiency">基于效率的总损耗</a>
+                        <a class="nav-link py-1 ps-3" href="#total_losses_estimate">总损耗估算</a>
+                        <a class="nav-link py-1 ps-3" href="#efficiency">效率计算</a>
+                    </div>
+
+                    <!-- 过载特性 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">🔥 过载特性</div>
+                        <a class="nav-link py-1 ps-3" href="#overload_current">过载电流</a>
+                        <a class="nav-link py-1 ps-3" href="#overload_torque">过载转矩</a>
+                        <a class="nav-link py-1 ps-3" href="#overload_power">过载功率</a>
+                        <a class="nav-link py-1 ps-3" href="#overload_losses">过载损耗</a>
+                        <a class="nav-link py-1 ps-3" href="#overload_phase_voltage">过载相电压</a>
+                        <a class="nav-link py-1 ps-3" href="#overload_line_voltage">过载线电压</a>
+                        <a class="nav-link py-1 ps-3" href="#overload_bus_voltage">过载母线电压</a>
+                    </div>
+
+                    <!-- 时间常数 -->
+                    <div class="py-2 nav-section">
+                        <div class="fw-bold text-primary bg-light p-2 mb-2">⏱️ 时间常数</div>
+                        <a class="nav-link py-1 ps-3" href="#electrical_time_constant">电气时间常数</a>
+                        <a class="nav-link py-1 ps-3" href="#thermal_time_constant">热时间常数</a>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- 右侧内容区 -->
+            <div class="col-9 offset-3">
+                <div class="container py-4">
+                    <h2 class="mb-4 text-primary">📚 电机参数计算公式手册</h2>
+
+                    <!-- 基本电机关系 -->
+                    <div class="mb-5">
+                        <h3 class="text-primary mb-4">⚡ 基本电机关系</h3>
+
+                        <!-- 角速度转换 -->
+                        <div class="card mb-4" id="angular_velocity">
+                            <div class="card-body">
+                                <h4 class="card-title">角速度转换</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_1">
+                                    ω = \frac{2π × n}{60}
+                                </div>
+                                <p class="card-text">说明：角速度与转速的关系</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：适用于所有旋转电机</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>ω</td>
+                                                <td>角速度</td>
+                                                <td>rad/s</td>
+                                            </tr>
+                                            <tr>
+                                                <td>n</td>
+                                                <td>转速</td>
+                                                <td>r/min</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 电气频率 -->
+                        <div class="card mb-4" id="electrical_frequency">
+                            <div class="card-body">
+                                <h4 class="card-title">电气频率</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_2">
+                                    f_e = \frac{p × n}{60}
+                                </div>
+                                <p class="card-text">说明：电气频率计算，基于极对数和机械转速</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：适用于同步电机和异步电机</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>f_e</td>
+                                                <td>电气频率</td>
+                                                <td>Hz</td>
+                                            </tr>
+                                            <tr>
+                                                <td>p</td>
+                                                <td>极对数</td>
+                                                <td>对</td>
+                                            </tr>
+                                            <tr>
+                                                <td>n</td>
+                                                <td>转速</td>
+                                                <td>r/min</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 磁链计算 -->
+                    <div class="mb-5">
+                        <h3 class="text-primary mb-4">🧲 磁链计算</h3>
+
+                        <!-- 从电压计算磁链 -->
+                        <div class="card mb-4" id="flux_linkage_from_voltage">
+                            <div class="card-body">
+                                <h4 class="card-title">从电压计算磁链</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_3">
+                                    Ψ = \frac{E_{phase\_peak}}{p × ω}
+                                </div>
+                                <p class="card-text">说明：基于相反电动势峰值计算磁链</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：需要准确的相反电动势峰值测量值，适用于星型连接电机</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Ψ</td>
+                                                <td>磁链</td>
+                                                <td>Wb</td>
+                                            </tr>
+                                            <tr>
+                                                <td>E_{phase\_peak}</td>
+                                                <td>相反电动势峰值</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>p</td>
+                                                <td>极对数</td>
+                                                <td>对</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ω</td>
+                                                <td>角速度</td>
+                                                <td>rad/s</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 从转矩计算磁链 -->
+                        <div class="card mb-4" id="flux_linkage_from_torque">
+                            <div class="card-body">
+                                <h4 class="card-title">从转矩计算磁链</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_4">
+                                    Ψ = \frac{2}{3} × \frac{T}{p × I_{rated}}
+                                </div>
+                                <p class="card-text">说明：基于转矩和电流的精确计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：基于完整三相电机模型的精确公式</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Ψ</td>
+                                                <td>磁链</td>
+                                                <td>Wb</td>
+                                            </tr>
+                                            <tr>
+                                                <td>T</td>
+                                                <td>转矩</td>
+                                                <td>N·m</td>
+                                            </tr>
+                                            <tr>
+                                                <td>p</td>
+                                                <td>极对数</td>
+                                                <td>对</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I_{rated}</td>
+                                                <td>额定电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 从功率计算磁链 -->
+                        <div class="card mb-4" id="flux_linkage_from_power">
+                            <div class="card-body">
+                                <h4 class="card-title">从功率计算磁链</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_5">
+                                    Ψ = \frac{2}{3} × \frac{P_{rated}}{p × I_{est} × ω}
+                                </div>
+                                <p class="card-text">说明：基于额定功率的精确计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：基于完整三相电机模型，精度较高</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Ψ</td>
+                                                <td>磁链</td>
+                                                <td>Wb</td>
+                                            </tr>
+                                            <tr>
+                                                <td>P_{rated}</td>
+                                                <td>额定功率</td>
+                                                <td>W</td>
+                                            </tr>
+                                            <tr>
+                                                <td>p</td>
+                                                <td>极对数</td>
+                                                <td>对</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I_{est}</td>
+                                                <td>估算电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ω</td>
+                                                <td>角速度</td>
+                                                <td>rad/s</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 电机常数 -->
+                    <div class="mb-5">
+                        <h3 class="text-primary mb-4">🔧 电机常数</h3>
+
+                        <!-- 反电动势常数Ke定义 -->
+                        <div class="card mb-4" id="back_emf_constant_phase">
+                            <div class="card-body">
+                                <h4 class="card-title">反电动势常数Ke定义</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_6">
+                                    K_e = Ψ × p
+                                </div>
+                                <p class="card-text">说明：相反电动势常数定义</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：基于相电压的反电动势常数</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>K_e</td>
+                                                <td>反电动势常数</td>
+                                                <td>V·s/rad</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ψ</td>
+                                                <td>磁链</td>
+                                                <td>Wb</td>
+                                            </tr>
+                                            <tr>
+                                                <td>p</td>
+                                                <td>极对数</td>
+                                                <td>对</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 转矩常数Kt定义 -->
+                        <div class="card mb-4" id="torque_constant">
+                            <div class="card-body">
+                                <h4 class="card-title">转矩常数Kt定义</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_7">
+                                    K_t = \frac{3}{2} × p × Ψ
+                                </div>
+                                <p class="card-text">说明：转矩常数定义公式</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：完整三相电机模型</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>K_t</td>
+                                                <td>转矩常数</td>
+                                                <td>N·m/A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>p</td>
+                                                <td>极对数</td>
+                                                <td>对</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ψ</td>
+                                                <td>磁链</td>
+                                                <td>Wb</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kt与Ke关系 -->
+                        <div class="card mb-4" id="kt_ke_relationship">
+                            <div class="card-body">
+                                <h4 class="card-title">Kt与Ke关系</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_8">
+                                    K_t = 1.5 × K_e
+                                </div>
+                                <p class="card-text">说明：转矩常数与反电动势常数的理论关系</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：理想三相电机模型</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>K_t</td>
+                                                <td>转矩常数</td>
+                                                <td>N·m/A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>K_e</td>
+                                                <td>反电动势常数</td>
+                                                <td>V·s/rad</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 功率计算 -->
+                    <div class="mb-5">
+                        <h3 class="text-primary mb-4">💪 功率计算</h3>
+
+                        <!-- 机械功率 -->
+                        <div class="card mb-4" id="mechanical_power">
+                            <div class="card-body">
+                                <h4 class="card-title">机械功率</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_9">
+                                    P_{mech} = T × ω
+                                </div>
+                                <p class="card-text">说明：机械功率计算基本公式</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：适用于所有旋转电机</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>P_{mech}</td>
+                                                <td>机械功率</td>
+                                                <td>W</td>
+                                            </tr>
+                                            <tr>
+                                                <td>T</td>
+                                                <td>转矩</td>
+                                                <td>N·m</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ω</td>
+                                                <td>角速度</td>
+                                                <td>rad/s</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 三相电功率 -->
+                        <div class="card mb-4" id="electrical_power_3phase">
+                            <div class="card-body">
+                                <h4 class="card-title">三相电功率</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_10">
+                                    P_{elec} = \sqrt{3} × U_{line\_rated} × I_{rated} × cos\phi
+                                </div>
+                                <p class="card-text">说明：三相电气功率计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：三相对称系统</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>P_{elec}</td>
+                                                <td>电气功率</td>
+                                                <td>W</td>
+                                            </tr>
+                                            <tr>
+                                                <td>U_{line\_rated}</td>
+                                                <td>额定线电压</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I_{rated}</td>
+                                                <td>额定电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>cos\phi</td>
+                                                <td>功率因数</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 视在功率 -->
+                        <div class="card mb-4" id="apparent_power">
+                            <div class="card-body">
+                                <h4 class="card-title">视在功率</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_11">
+                                    S = \sqrt{3} × U_{line\_rated} × I_{rated}
+                                </div>
+                                <p class="card-text">说明：三相视在功率计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：三相对称系统</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>S</td>
+                                                <td>视在功率</td>
+                                                <td>VA</td>
+                                            </tr>
+                                            <tr>
+                                                <td>U_{line\_rated}</td>
+                                                <td>额定线电压</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I_{rated}</td>
+                                                <td>额定电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 无功功率 -->
+                        <div class="card mb-4" id="reactive_power">
+                            <div class="card-body">
+                                <h4 class="card-title">无功功率</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_12">
+                                    Q = \sqrt{S^2 - P_{elec}^2}
+                                </div>
+                                <p class="card-text">说明：无功功率计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：基于功率三角形关系</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Q</td>
+                                                <td>无功功率</td>
+                                                <td>VAR</td>
+                                            </tr>
+                                            <tr>
+                                                <td>S</td>
+                                                <td>视在功率</td>
+                                                <td>VA</td>
+                                            </tr>
+                                            <tr>
+                                                <td>P_{elec}</td>
+                                                <td>有功功率</td>
+                                                <td>W</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 电阻电感计算 -->
+                    <div class="mb-5">
+                        <h3 class="text-primary mb-4">🔌 电阻电感计算</h3>
+
+                        <!-- 基于铜损的电阻计算 -->
+                        <div class="card mb-4" id="resistance_from_losses">
+                            <div class="card-body">
+                                <h4 class="card-title">基于铜损的电阻计算</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_13">
+                                    R = \frac{P_{cu}}{3 × I^2}
+                                </div>
+                                <p class="card-text">说明：基于铜损的电阻计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：假设三相对称</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>R</td>
+                                                <td>电阻</td>
+                                                <td>Ω</td>
+                                            </tr>
+                                            <tr>
+                                                <td>P_{cu}</td>
+                                                <td>铜损</td>
+                                                <td>W</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I</td>
+                                                <td>电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 电阻经验估算 -->
+                        <div class="card mb-4" id="resistance_empirical">
+                            <div class="card-body">
+                                <h4 class="card-title">电阻经验估算</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_14">
+                                    R \approx k_R × P_{rated}^{-0.5}
+                                </div>
+                                <p class="card-text">说明：基于额定功率的电阻经验估算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：经验公式，k_R为电阻经验常数</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>R</td>
+                                                <td>电阻</td>
+                                                <td>Ω</td>
+                                            </tr>
+                                            <tr>
+                                                <td>k_R</td>
+                                                <td>电阻经验常数</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>P_{rated}</td>
+                                                <td>额定功率</td>
+                                                <td>W</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 几何电感计算 -->
+                        <div class="card mb-4" id="inductance_geometric">
+                            <div class="card-body">
+                                <h4 class="card-title">几何电感计算</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_15">
+                                    L_s \approx \mu_0 × D × l × k
+                                </div>
+                                <p class="card-text">说明：基于几何参数的电感估算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：简化模型，k为几何常数，l为铁心长度</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>L_s</td>
+                                                <td>定子电感</td>
+                                                <td>H</td>
+                                            </tr>
+                                            <tr>
+                                                <td>\mu_0</td>
+                                                <td>真空磁导率</td>
+                                                <td>H/m</td>
+                                            </tr>
+                                            <tr>
+                                                <td>D</td>
+                                                <td>直径</td>
+                                                <td>m</td>
+                                            </tr>
+                                            <tr>
+                                                <td>l</td>
+                                                <td>铁心长度</td>
+                                                <td>m</td>
+                                            </tr>
+                                            <tr>
+                                                <td>k</td>
+                                                <td>几何常数</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 电感经验估算 -->
+                        <div class="card mb-4" id="inductance_empirical">
+                            <div class="card-body">
+                                <h4 class="card-title">电感经验估算</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_16">
+                                    L \approx L_{base} × (\frac{P_{base}}{P})^{0.5}
+                                </div>
+                                <p class="card-text">说明：基于功率等级的电感经验估算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：经验公式，需要基准值</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>L</td>
+                                                <td>电感</td>
+                                                <td>H</td>
+                                            </tr>
+                                            <tr>
+                                                <td>L_{base}</td>
+                                                <td>基准电感</td>
+                                                <td>H</td>
+                                            </tr>
+                                            <tr>
+                                                <td>P_{base}</td>
+                                                <td>基准功率</td>
+                                                <td>W</td>
+                                            </tr>
+                                            <tr>
+                                                <td>P</td>
+                                                <td>实际功率</td>
+                                                <td>W</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 电压关系 -->
+                    <div class="mb-5">
+                        <h3 class="text-primary mb-4">⚡ 电压关系</h3>
+
+                        <!-- 相电压与线电压关系 -->
+                        <div class="card mb-4" id="phase_voltage_relationship">
+                            <div class="card-body">
+                                <h4 class="card-title">相电压与线电压关系</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_17">
+                                    U_{phase} = \frac{U_{line}}{\sqrt{3}}
+                                </div>
+                                <p class="card-text">说明：星形连接的相电压与线电压关系</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：仅适用于星形连接</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>U_{phase}</td>
+                                                <td>相电压</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>U_{line}</td>
+                                                <td>线电压</td>
+                                                <td>V</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 精确额定相电压计算 -->
+                        <div class="card mb-4" id="rated_voltage_complex">
+                            <div class="card-body">
+                                <h4 class="card-title">精确额定相电压计算</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_18">
+                                    U_{phase\_rated} = \sqrt{(E_{phase\_rated}+I×Z×cos\phi)^2 + (I×Z×sin\phi)^2}
+                                </div>
+                                <p class="card-text">说明：考虑阻抗和功率因数的额定相电压计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：精确计算，需要阻抗和功率因数参数</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>U_{phase\_rated}</td>
+                                                <td>额定相电压</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>E_{phase\_rated}</td>
+                                                <td>额定相反电动势</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I</td>
+                                                <td>电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Z</td>
+                                                <td>阻抗</td>
+                                                <td>Ω</td>
+                                            </tr>
+                                            <tr>
+                                                <td>cos\phi</td>
+                                                <td>功率因数</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>sin\phi</td>
+                                                <td>功率因数正弦值</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 简化额定线电压计算 -->
+                        <div class="card mb-4" id="rated_voltage_simple">
+                            <div class="card-body">
+                                <h4 class="card-title">简化额定线电压计算</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_19">
+                                    U_{line\_rated} = E_{line\_rated} + I_{rated} × R_{est}
+                                </div>
+                                <p class="card-text">说明：简化的额定线电压计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：忽略电感，仅考虑电阻压降</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>U_{line\_rated}</td>
+                                                <td>额定线电压</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>E_{line\_rated}</td>
+                                                <td>额定线反电动势</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I_{rated}</td>
+                                                <td>额定电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>R_{est}</td>
+                                                <td>估算电阻</td>
+                                                <td>Ω</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 基于电流的线电压计算 -->
+                        <div class="card mb-4" id="rated_voltage_from_current">
+                            <div class="card-body">
+                                <h4 class="card-title">基于电流的线电压计算</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_20">
+                                    U_{line\_rated} = I_{rated} × \sqrt{R^2 + (ω × L)^2}
+                                </div>
+                                <p class="card-text">说明：基于额定电流的线电压计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：基于欧姆定律U=IZ，忽略反电动势</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>U_{line\_rated}</td>
+                                                <td>额定线电压</td>
+                                                <td>V</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I_{rated}</td>
+                                                <td>额定电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>R</td>
+                                                <td>电阻</td>
+                                                <td>Ω</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ω</td>
+                                                <td>角速度</td>
+                                                <td>rad/s</td>
+                                            </tr>
+                                            <tr>
+                                                <td>L</td>
+                                                <td>电感</td>
+                                                <td>H</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 过载特性 -->
+                    <div class="mb-5">
+                        <h3 class="text-primary mb-4">🔥 过载特性</h3>
+
+                        <!-- 过载电流 -->
+                        <div class="card mb-4" id="overload_current">
+                            <div class="card-body">
+                                <h4 class="card-title">过载电流</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_21">
+                                    I_{overload} = I_{rated} × k_{overload}
+                                </div>
+                                <p class="card-text">说明：过载电流计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：短时过载条件</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>I_{overload}</td>
+                                                <td>过载电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>I_{rated}</td>
+                                                <td>额定电流</td>
+                                                <td>A</td>
+                                            </tr>
+                                            <tr>
+                                                <td>k_{overload}</td>
+                                                <td>过载倍数</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 过载转矩 -->
+                        <div class="card mb-4" id="overload_torque">
+                            <div class="card-body">
+                                <h4 class="card-title">过载转矩</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_22">
+                                    T_{overload} = T_{rated} × k_{overload}
+                                </div>
+                                <p class="card-text">说明：过载转矩计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：假设转矩与电流成正比</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>T_{overload}</td>
+                                                <td>过载转矩</td>
+                                                <td>N·m</td>
+                                            </tr>
+                                            <tr>
+                                                <td>T_{rated}</td>
+                                                <td>额定转矩</td>
+                                                <td>N·m</td>
+                                            </tr>
+                                            <tr>
+                                                <td>k_{overload}</td>
+                                                <td>过载倍数</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 过载铜损 -->
+                        <div class="card mb-4" id="overload_losses">
+                            <div class="card-body">
+                                <h4 class="card-title">过载铜损</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_23">
+                                    P_{cu\_overload} = P_{cu\_rated} × k_{overload}^2
+                                </div>
+                                <p class="card-text">说明：过载状态下的铜损计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：主要考虑铜损增加</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>P_{cu\_overload}</td>
+                                                <td>过载铜损</td>
+                                                <td>W</td>
+                                            </tr>
+                                            <tr>
+                                                <td>P_{cu\_rated}</td>
+                                                <td>额定铜损</td>
+                                                <td>W</td>
+                                            </tr>
+                                            <tr>
+                                                <td>k_{overload}</td>
+                                                <td>过载倍数</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 时间常数 -->
+                    <div class="mb-5">
+                        <h3 class="text-primary mb-4">⏱️ 时间常数</h3>
+
+                        <!-- 电气时间常数 -->
+                        <div class="card mb-4" id="electrical_time_constant">
+                            <div class="card-body">
+                                <h4 class="card-title">电气时间常数</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_24">
+                                    τ_e = \frac{L}{R}
+                                </div>
+                                <p class="card-text">说明：电气时间常数计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：一阶电路模型</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>τ_e</td>
+                                                <td>电气时间常数</td>
+                                                <td>s</td>
+                                            </tr>
+                                            <tr>
+                                                <td>L</td>
+                                                <td>电感</td>
+                                                <td>H</td>
+                                            </tr>
+                                            <tr>
+                                                <td>R</td>
+                                                <td>电阻</td>
+                                                <td>Ω</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 热时间常数 -->
+                        <div class="card mb-4" id="thermal_time_constant">
+                            <div class="card-body">
+                                <h4 class="card-title">热时间常数</h4>
+                                <div class="bg-light p-3 rounded my-3" id="formula_25">
+                                    τ_{th} \approx \frac{C_{th}}{G_{th}}
+                                </div>
+                                <p class="card-text">说明：热时间常数计算</p>
+                                <div class="bg-light p-2 rounded mb-3">
+                                    <small class="text-muted">适用条件：简化热模型</small>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>符号</th>
+                                                <th>含义</th>
+                                                <th>单位</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>τ_{th}</td>
+                                                <td>热时间常数</td>
+                                                <td>s</td>
+                                            </tr>
+                                            <tr>
+                                                <td>C_{th}</td>
+                                                <td>热容</td>
+                                                <td>J/K</td>
+                                            </tr>
+                                            <tr>
+                                                <td>G_{th}</td>
+                                                <td>热导</td>
+                                                <td>W/K</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 使用提示部分 -->
+                <div id="tips" class="section mb-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="bi bi-lightbulb"></i> 使用提示
+                            </h3>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    确保所有输入参数的单位正确
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    注意公式的适用范围和条件
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    对于估算公式，结果仅供参考
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle text-success"></i>
+                                    建议结合多个公式进行交叉验证
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script>
+        // 搜索功能
+        function filterFormulas() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.nav-section');
+
+            navLinks.forEach(link => {
+                const text = link.textContent.toLowerCase();
+                if (text.includes(searchText)) {
+                    link.classList.remove('d-none');
+                } else {
+                    link.classList.add('d-none');
+                }
+            });
+
+            sections.forEach(section => {
+                const visibleLinks = section.querySelectorAll('.nav-link:not(.d-none)').length;
+                if (visibleLinks === 0) {
+                    section.classList.add('d-none');
+                } else {
+                    section.classList.remove('d-none');
+                }
+            });
+        }
+
+        // 清除搜索
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.nav-link, .nav-section').forEach(el => {
+                el.classList.remove('d-none');
+            });
+        }
+
+        // 渲染数学公式
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[id^="formula_"]').forEach(element => {
+                katex.render(element.textContent.trim(), element, {
+                    throwOnError: false,
+                    displayMode: true
+                });
+            });
+
+            // 导航链接点击事件
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+
+                        // 移除其他链接的激活状态
+                        document.querySelectorAll('.nav-link').forEach(l => {
+                            l.classList.remove('active');
+                        });
+                        // 添加当前链接的激活状态
+                        link.classList.add('active');
+
+                        // 添加卡片高亮效果
+                        document.querySelectorAll('.card').forEach(card => {
+                            card.classList.remove('border-primary');
+                        });
+                        targetElement.classList.add('border-primary');
+
+                        // 3秒后移除高亮效果
+                        setTimeout(() => {
+                            targetElement.classList.remove('border-primary');
+                        }, 3000);
+                    }
+                });
+            });
+        });
+
+        // 搜索框事件监听
+        document.getElementById('searchInput').addEventListener('input', filterFormulas);
+    </script>
+</body>
+
+</html>
