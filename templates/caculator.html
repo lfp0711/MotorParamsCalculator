@@ -428,7 +428,7 @@
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <th scope="row">低置信度 (<50%)< /th>
+                                    <th scope="row">低置信度 (<50%)</th>
                                     <td id="confidenceLow"></td>
                                 </tr>
                                 <tr>
@@ -458,192 +458,385 @@
                         aria-selected="true">🔣 变量定义</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="formula-definition-tab" data-bs-toggle="tab" data-bs-target="#formula-definition"
-                        type="button" role="tab" aria-controls="formula-definition" aria-selected="false">📐 公式定义</button>
+                    <button class="nav-link" id="formula-definition-tab" data-bs-toggle="tab"
+                        data-bs-target="#formula-definition" type="button" role="tab" aria-controls="formula-definition"
+                        aria-selected="false">📐 公式定义</button>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="var-definition" role="tabpanel">
-                    <table class="table table-hover table-bordered">
+                    <table class="table table-hover table-bordered align-middle">
                         <thead class="table-light">
                             <tr class="table-primary">
-                                <th scope="col" style="width: 25%">变量名</th>
-                                <th scope="col" style="width: 35%">描述</th>
-                                <th scope="col" style="width: 20%">单位</th>
-                                <th scope="col" style="width: 20%">符号</th>
+                                <th class="col-3">变量名</th>
+                                <th class="col-2">符号</th>
+                                <th class="col-2">单位</th>
+                                <th class="col-5">描述</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- 基本参数 -->
-                            <tr class="table-info">
-                                <td colspan="4">基本参数</td>
+                            <tr>
+                                <td colspan="4" class="table-info fw-bold">【基本参数】</td>
                             </tr>
                             <tr>
                                 <td>pole_pairs</td>
-                                <td>极对数</td>
-                                <td>对</td>
                                 <td>p</td>
+                                <td>对</td>
+                                <td>极对数</td>
                             </tr>
                             <tr>
                                 <td>rated_power</td>
-                                <td>额定功率</td>
-                                <td>KW</td>
                                 <td>P_rated</td>
+                                <td>KW</td>
+                                <td>额定功率</td>
                             </tr>
                             <tr>
                                 <td>rated_speed</td>
-                                <td>额定转速</td>
+                                <td>n_rated</td>
                                 <td>r/min</td>
-                                <td>n</td>
+                                <td>额定转速</td>
                             </tr>
                             <tr>
                                 <td>rated_torque</td>
+                                <td>T_rated</td>
+                                <td>N·m</td>
                                 <td>额定转矩</td>
-                                <td>Nm</td>
-                                <td>T</td>
                             </tr>
                             <tr>
                                 <td>rated_frequency</td>
-                                <td>额定频率</td>
+                                <td>f_rated</td>
                                 <td>Hz</td>
-                                <td>f</td>
+                                <td>额定频率</td>
                             </tr>
 
                             <!-- 电气参数 - 星型连接 -->
-                            <tr class="table-info">
-                                <td colspan="4">电气参数 - 星型连接</td>
+                            <tr>
+                                <td colspan="4" class="table-info fw-bold">【电气参数 - 星型连接】</td>
                             </tr>
                             <tr>
                                 <td>stator_resistance</td>
-                                <td>定子电阻</td>
+                                <td>R_s</td>
                                 <td>Ω</td>
-                                <td>R</td>
+                                <td>定子电阻</td>
                             </tr>
                             <tr>
                                 <td>stator_inductance</td>
-                                <td>定子电感</td>
+                                <td>L_s</td>
                                 <td>H</td>
-                                <td>L</td>
+                                <td>定子电感</td>
                             </tr>
                             <tr>
                                 <td>flux_linkage</td>
-                                <td>磁链</td>
-                                <td>Wb</td>
                                 <td>Ψ</td>
+                                <td>Wb</td>
+                                <td>磁链</td>
+                            </tr>
+                            <tr>
+                                <td>back_emf_constant</td>
+                                <td>K_e</td>
+                                <td>V·s/rad</td>
+                                <td>反电动势常数</td>
+                            </tr>
+                            <tr>
+                                <td>torque_constant</td>
+                                <td>K_t</td>
+                                <td>N·m/A</td>
+                                <td>转矩常数</td>
                             </tr>
                             <tr>
                                 <td>power_factor</td>
-                                <td>功率因数</td>
-                                <td>-</td>
                                 <td>cosφ</td>
+                                <td>无量纲</td>
+                                <td>功率因数</td>
+                            </tr>
+                            <tr>
+                                <td>apparent_power</td>
+                                <td>S</td>
+                                <td>VA</td>
+                                <td>视在功率</td>
+                            </tr>
+                            <tr>
+                                <td>reactive_power</td>
+                                <td>Q</td>
+                                <td>VAR</td>
+                                <td>无功功率</td>
+                            </tr>
+                            <tr>
+                                <td>reactance</td>
+                                <td>XL</td>
+                                <td>Ω</td>
+                                <td>感抗</td>
+                            </tr>
+                            <tr>
+                                <td>impedance</td>
+                                <td>Z</td>
+                                <td>Ω</td>
+                                <td>阻抗</td>
+                            </tr>
+                            <tr>
+                                <td>frequency</td>
+                                <td>f</td>
+                                <td>Hz</td>
+                                <td>频率</td>
+                            </tr>
+                            <tr>
+                                <td>electrical_frequency</td>
+                                <td>f_e</td>
+                                <td>Hz</td>
+                                <td>电气频率</td>
                             </tr>
 
                             <!-- 反电动势参数 -->
-                            <tr class="table-info">
-                                <td colspan="4">反电动势参数</td>
+                            <tr>
+                                <td colspan="4" class="table-info fw-bold">【反电动势参数】</td>
                             </tr>
                             <tr>
                                 <td>rated_line_back_emf</td>
-                                <td>额定线反电动势</td>
-                                <td>Vrms</td>
-                                <td>E</td>
+                                <td>E_line_rated</td>
+                                <td>V</td>
+                                <td>额定线反电动势(有效值)</td>
                             </tr>
                             <tr>
                                 <td>rated_phase_back_emf</td>
-                                <td>额定相反电动势</td>
-                                <td>Vrms</td>
-                                <td>E_ph</td>
+                                <td>E_phase_rated</td>
+                                <td>V</td>
+                                <td>额定相反电动势(有效值)</td>
+                            </tr>
+                            <tr>
+                                <td>peak_line_back_emf</td>
+                                <td>E_line_peak</td>
+                                <td>V</td>
+                                <td>峰值线反电动势</td>
+                            </tr>
+                            <tr>
+                                <td>peak_phase_back_emf</td>
+                                <td>E_phase_peak</td>
+                                <td>V</td>
+                                <td>峰值相反电动势</td>
                             </tr>
 
                             <!-- 电压参数 -->
-                            <tr class="table-info">
-                                <td colspan="4">电压参数</td>
+                            <tr>
+                                <td colspan="4" class="table-info fw-bold">【电压参数】</td>
                             </tr>
                             <tr>
                                 <td>rated_line_voltage</td>
-                                <td>额定线电压</td>
-                                <td>Vrms</td>
-                                <td>UL</td>
+                                <td>U_line_rated</td>
+                                <td>V</td>
+                                <td>额定线电压(有效值)</td>
                             </tr>
                             <tr>
                                 <td>rated_phase_voltage</td>
-                                <td>额定相电压</td>
-                                <td>Vrms</td>
-                                <td>U_ph</td>
+                                <td>U_phase_rated</td>
+                                <td>V</td>
+                                <td>额定相电压(有效值)</td>
+                            </tr>
+                            <tr>
+                                <td>peak_line_voltage</td>
+                                <td>U_line_peak</td>
+                                <td>V</td>
+                                <td>峰值线电压</td>
+                            </tr>
+                            <tr>
+                                <td>peak_phase_voltage</td>
+                                <td>U_phase_peak</td>
+                                <td>V</td>
+                                <td>峰值相电压</td>
                             </tr>
 
                             <!-- 电流参数 -->
-                            <tr class="table-info">
-                                <td colspan="4">电流参数</td>
+                            <tr>
+                                <td colspan="4" class="table-info fw-bold">【电流参数】</td>
                             </tr>
                             <tr>
                                 <td>rated_current</td>
-                                <td>额定电流</td>
-                                <td>Arms</td>
                                 <td>I_rated</td>
+                                <td>A</td>
+                                <td>额定电流</td>
                             </tr>
                             <tr>
                                 <td>peak_current</td>
-                                <td>峰值电流</td>
-                                <td>A</td>
                                 <td>I_peak</td>
+                                <td>A</td>
+                                <td>峰值电流</td>
                             </tr>
 
                             <!-- 机械参数 -->
-                            <tr class="table-info">
-                                <td colspan="4">机械参数</td>
+                            <tr>
+                                <td colspan="4" class="table-info fw-bold">【机械参数】</td>
+                            </tr>
+                            <tr>
+                                <td>angular_velocity</td>
+                                <td>ω</td>
+                                <td>rad/s</td>
+                                <td>角速度</td>
                             </tr>
                             <tr>
                                 <td>moment_of_inertia</td>
-                                <td>转动惯量</td>
-                                <td>kg·m²</td>
                                 <td>J</td>
+                                <td>kg·m²</td>
+                                <td>转动惯量</td>
                             </tr>
                             <tr>
                                 <td>mechanical_power</td>
-                                <td>机械功率</td>
-                                <td>W</td>
                                 <td>P_mech</td>
+                                <td>KW</td>
+                                <td>机械功率</td>
+                            </tr>
+                            <tr>
+                                <td>electrical_power</td>
+                                <td>P_elec</td>
+                                <td>KW</td>
+                                <td>电气功率</td>
+                            </tr>
+                            <tr>
+                                <td>startup_torque</td>
+                                <td>T_startup</td>
+                                <td>N·m</td>
+                                <td>启动转矩</td>
+                            </tr>
+                            <tr>
+                                <td>max_torque</td>
+                                <td>T_max</td>
+                                <td>N·m</td>
+                                <td>最大转矩</td>
+                            </tr>
+                            <tr>
+                                <td>load_torque</td>
+                                <td>T_load</td>
+                                <td>N·m</td>
+                                <td>负载转矩</td>
+                            </tr>
+                            <tr>
+                                <td>speed_rpm</td>
+                                <td>n</td>
+                                <td>r/min</td>
+                                <td>转速</td>
+                            </tr>
+                            <tr>
+                                <td>slip</td>
+                                <td>s</td>
+                                <td>无量纲</td>
+                                <td>转差率</td>
+                            </tr>
+                            <tr>
+                                <td>synchronous_speed</td>
+                                <td>n_s</td>
+                                <td>r/min</td>
+                                <td>同步转速</td>
                             </tr>
 
                             <!-- 效率和损耗 -->
-                            <tr class="table-info">
-                                <td colspan="4">效率和损耗</td>
-                            </tr>
                             <tr>
-                                <td>efficiency</td>
-                                <td>效率</td>
-                                <td>%</td>
-                                <td>η</td>
+                                <td colspan="4" class="table-info fw-bold">【效率和损耗】</td>
                             </tr>
                             <tr>
                                 <td>copper_losses</td>
-                                <td>铜损</td>
-                                <td>W</td>
                                 <td>P_cu</td>
+                                <td>KW</td>
+                                <td>铜损</td>
+                            </tr>
+                            <tr>
+                                <td>total_losses</td>
+                                <td>P_loss</td>
+                                <td>KW</td>
+                                <td>总损耗</td>
+                            </tr>
+                            <tr>
+                                <td>efficiency</td>
+                                <td>η</td>
+                                <td>%</td>
+                                <td>效率</td>
+                            </tr>
+
+                            <!-- 时间常数和热参数 -->
+                            <tr>
+                                <td colspan="4" class="table-info fw-bold">【时间常数和热参数】</td>
+                            </tr>
+                            <tr>
+                                <td>electrical_time_constant</td>
+                                <td>τ_e</td>
+                                <td>s</td>
+                                <td>电气时间常数</td>
+                            </tr>
+                            <tr>
+                                <td>thermal_time_constant</td>
+                                <td>τ_th</td>
+                                <td>s</td>
+                                <td>热时间常数</td>
+                            </tr>
+                            <tr>
+                                <td>C_th</td>
+                                <td>C_th</td>
+                                <td>J/K</td>
+                                <td>热容</td>
+                            </tr>
+                            <tr>
+                                <td>G_th</td>
+                                <td>G_th</td>
+                                <td>W/K</td>
+                                <td>热导</td>
                             </tr>
 
                             <!-- 过载相关参数 -->
-                            <tr class="table-info">
-                                <td colspan="4">过载相关参数</td>
+                            <tr>
+                                <td colspan="4" class="table-info fw-bold">【过载相关参数】</td>
                             </tr>
                             <tr>
-                                <td>overload_factor</td>
-                                <td>过载倍数</td>
-                                <td>倍</td>
                                 <td>k_overload</td>
+                                <td>k_overload</td>
+                                <td>无量纲</td>
+                                <td>过载倍数</td>
+                            </tr>
+                            <tr>
+                                <td>I_overload</td>
+                                <td>I_overload</td>
+                                <td>A</td>
+                                <td>过载电流</td>
+                            </tr>
+                            <tr>
+                                <td>T_overload</td>
+                                <td>T_overload</td>
+                                <td>N·m</td>
+                                <td>过载转矩</td>
+                            </tr>
+                            <tr>
+                                <td>P_overload</td>
+                                <td>P_overload</td>
+                                <td>KW</td>
+                                <td>过载功率</td>
+                            </tr>
+                            <tr>
+                                <td>U_phase_overload</td>
+                                <td>U_phase_overload</td>
+                                <td>V</td>
+                                <td>过载相电压</td>
+                            </tr>
+                            <tr>
+                                <td>U_line_overload</td>
+                                <td>U_line_overload</td>
+                                <td>V</td>
+                                <td>过载线电压</td>
+                            </tr>
+                            <tr>
+                                <td>U_bus_overload</td>
+                                <td>U_bus_overload</td>
+                                <td>V</td>
+                                <td>过载母线电压</td>
                             </tr>
                             <tr>
                                 <td>overload_duration</td>
-                                <td>过载持续时间</td>
+                                <td>t_overload</td>
                                 <td>s</td>
-                                <td>T_overload</td>
+                                <td>过载持续时间</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div class="tab-pane fade" id="formula-definition" role="tabpanel" aria-labelledby="formula-definition-tab">
-                    
+                <div class="tab-pane fade" id="formula-definition" role="tabpanel"
+                    aria-labelledby="formula-definition-tab">
+
                 </div>
             </div>
         </div>
